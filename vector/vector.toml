@@ -1,0 +1,51 @@
+##################################
+# SOURCE – SYSLOG FORTINET
+##################################
+[sources.fortinet_syslog]
+type = "syslog"
+mode = "tcp_udp"
+address = "0.0.0.0:514"
+
+##################################
+# TRANSFORM – PARSE + NORMALIZAÇÃO
+##################################
+[transforms.parse_fortinet]
+type = "remap"
+inputs = ["fortinet_syslog"]
+source = '''
+# Parse padrão key=value do Fortinet
+. |= parse_key_value!(.message)
+
+# Normalização mínima
+.log_type = "fortinet"
+
+# Classificação simples por tipo
+if exists(.type) {
+  if .type == "traffic" {
+    .log_category = "traffic"
+  } else if .type == "utm" {
+    .log_category = "utm"
+  } else {
+    .log_category = "event"
+  }
+} else {
+  .log_category = "unknown"
+}
+
+# Timestamp fallback
+if !exists(.timestamp) {
+  .timestamp = now()
+}
+'''
+
+##################################
+# SINK – VICTORIA LOGS
+##################################
+[sinks.victorialogs]
+type = "http"
+inputs = ["parse_fortinet"]
+uri = "http://victorialogs:9428/insert/jsonline"
+method = "post"
+encoding.codec = "json"
+batch.max_events = 1000
+batch.timeout_secs = 5
