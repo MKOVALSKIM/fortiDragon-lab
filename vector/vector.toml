@@ -1,0 +1,33 @@
+[sources.fortinet_syslog]
+type = "syslog"
+mode = "tcp_udp"
+address = "0.0.0.0:514"
+
+[transforms.parse_fortinet]
+type = "remap"
+inputs = ["fortinet_syslog"]
+source = '''
+. |= parse_key_value!(.message)
+.log_type = "fortinet"
+
+if exists(.type) {
+  if .type == "traffic" {
+    .log_category = "traffic"
+  } else if .type == "utm" {
+    .log_category = "utm"
+  } else {
+    .log_category = "event"
+  }
+} else {
+  .log_category = "unknown"
+}
+
+if !exists(.timestamp) {
+  .timestamp = now()
+}
+'''
+[sinks.victorialogs]
+type = "http"
+inputs = ["parse_fortinet"]
+uri = "http://victorialogs:9428/insert/jsonline"
+encoding.codec = "json"
