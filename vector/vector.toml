@@ -1,10 +1,22 @@
 ##################################
 # SOURCE – SYSLOG FORTINET
 ##################################
-[sources.fortinet_syslog]
+[sources.fortinet_syslog_tcp]
 type = "syslog"
-mode = "tcp_udp"
+mode = "tcp"
 address = "0.0.0.0:514"
+
+[sources.fortinet_syslog_udp]
+type = "syslog"
+mode = "udp"
+address = "0.0.0.0:514"
+
+[sinks.out]
+type = "console"
+input = ["fortinet_syslog_tcp","fortinet_syslog_udp"]
+output = "json"
+
+
 
 ##################################
 # TRANSFORM – PARSE + NORMALIZAÇÃO
