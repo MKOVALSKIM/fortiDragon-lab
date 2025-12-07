@@ -11,10 +11,10 @@ type = "syslog"
 mode = "udp"
 address = "0.0.0.0:514"
 
-[sinks.out]
-type = "console"
-input = ["fortinet_syslog_tcp","fortinet_syslog_udp"]
-output = "json"
+#[sinks.out]
+#type = "console"
+#input = ["fortinet_syslog_tcp","fortinet_syslog_udp"]
+#output = "json"
 
 
 
