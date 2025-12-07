@@ -1,29 +1,22 @@
-<<<<<<< HEAD
-=======
 ##################################
 # SOURCE – SYSLOG FORTINET
 ##################################
->>>>>>> 4e8c07f880515a9cd3c1f62a5527a9ee5f23881e
 [sources.fortinet_syslog]
 type = "syslog"
 mode = "tcp_udp"
 address = "0.0.0.0:514"
 
-<<<<<<< HEAD
-=======
 ##################################
 # TRANSFORM – PARSE + NORMALIZAÇÃO
 ##################################
->>>>>>> 4e8c07f880515a9cd3c1f62a5527a9ee5f23881e
 [transforms.parse_fortinet]
 type = "remap"
 inputs = ["fortinet_syslog"]
 source = '''
-<<<<<<< HEAD
 . |= parse_key_value!(.message)
 .log_type = "fortinet"
 
-=======
+
 # Parse padrão key=value do Fortinet
 . |= parse_key_value!(.message)
 
@@ -31,7 +24,6 @@ source = '''
 .log_type = "fortinet"
 
 # Classificação simples por tipo
->>>>>>> 4e8c07f880515a9cd3c1f62a5527a9ee5f23881e
 if exists(.type) {
   if .type == "traffic" {
     .log_category = "traffic"
@@ -44,30 +36,22 @@ if exists(.type) {
   .log_category = "unknown"
 }
 
-<<<<<<< HEAD
-=======
+
 # Timestamp fallback
->>>>>>> 4e8c07f880515a9cd3c1f62a5527a9ee5f23881e
 if !exists(.timestamp) {
   .timestamp = now()
 }
 '''
-<<<<<<< HEAD
-=======
+
 
 ##################################
 # SINK – VICTORIA LOGS
 ##################################
->>>>>>> 4e8c07f880515a9cd3c1f62a5527a9ee5f23881e
 [sinks.victorialogs]
 type = "http"
 inputs = ["parse_fortinet"]
 uri = "http://victorialogs:9428/insert/jsonline"
-<<<<<<< HEAD
 encoding.codec = "json"
-=======
 method = "post"
-encoding.codec = "json"
 batch.max_events = 1000
 batch.timeout_secs = 5
->>>>>>> 4e8c07f880515a9cd3c1f62a5527a9ee5f23881e
