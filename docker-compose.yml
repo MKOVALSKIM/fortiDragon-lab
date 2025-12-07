@@ -36,8 +36,4 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_INSTALL_PLUGINS=victoriametrics-logs-datasource
-<<<<<<< HEAD
     restart: unless-stopped
-=======
-    restart: unless-stopped
->>>>>>> 4e8c07f880515a9cd3c1f62a5527a9ee5f23881e
