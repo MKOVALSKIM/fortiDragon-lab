@@ -1,10 +1,10 @@
 ##################################
 # SOURCE – SYSLOG FORTINET
 ##################################
-[sources.fortinet_syslog_tcp]
-type = "syslog"
-mode = "tcp"
-address = "0.0.0.0:514"
+#[sources.fortinet_syslog_tcp]
+#type = "syslog"
+#mode = "tcp"
+#address = "0.0.0.0:514"
 
 [sources.fortinet_syslog_udp]
 type = "syslog"
@@ -23,12 +23,8 @@ address = "0.0.0.0:514"
 ##################################
 [transforms.parse_fortinet]
 type = "remap"
-inputs = ["fortinet_syslog_tcp","fortinet_syslog_udp"]
+inputs = ["fortinet_syslog_udp"]
 source = '''
-. |= parse_key_value!(.message)
-.log_type = "fortinet"
-
-
 # Parse padrão key=value do Fortinet
 . |= parse_key_value!(.message)
 
@@ -62,7 +58,7 @@ if !exists(.timestamp) {
 [sinks.victorialogs]
 type = "http"
 inputs = ["parse_fortinet"]
-uri = "http://victorialogs:9428/insert/jsonline"
+uri = "http://localhost:9428/insert/jsonline"
 encoding.codec = "json"
 method = "post"
 batch.max_events = 1000
