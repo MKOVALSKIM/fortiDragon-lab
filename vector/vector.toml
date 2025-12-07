@@ -11,10 +11,10 @@ type = "syslog"
 mode = "udp"
 address = "0.0.0.0:514"
 
-[sinks.out]
-type = "console"
-inputs = ["fortinet_syslog_tcp","fortinet_syslog_udp"]
-encoding = "json"
+#[sinks.out]
+#type = "console"
+#inputs = ["fortinet_syslog_tcp","fortinet_syslog_udp"]
+#encoding = "json"
 
 
 
@@ -23,7 +23,7 @@ encoding = "json"
 ##################################
 [transforms.parse_fortinet]
 type = "remap"
-inputs = ["fortinet_syslog"]
+inputs = ["fortinet_syslog_tcp","fortinet_syslog_udp"]
 source = '''
 . |= parse_key_value!(.message)
 .log_type = "fortinet"
